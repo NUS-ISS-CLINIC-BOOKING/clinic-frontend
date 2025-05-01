@@ -10,6 +10,7 @@ import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
+const noAuthWhiteList = ['/user/login', '/user/register'];
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
@@ -58,13 +59,16 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       content: initialState?.currentUser?.name,
     },
     footerRender: () => <Footer />,
+
+
     onPageChange: () => {
-      const { location } = history;
-      // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
+      const { pathname } = history.location;
+      const isWhitePath = noAuthWhiteList.some((path) => pathname.startsWith(path));
+      if (!initialState?.currentUser && !isWhitePath) {
         history.push(loginPath);
       }
     },
+
     links: isDev
       ? [
           <Link key="openapi" to="/umi/plugin/openapi" target="_blank">

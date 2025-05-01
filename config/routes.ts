@@ -4,13 +4,12 @@
     layout: false,
     routes: [
       {
-        name: 'login',
-        path: '/user/login', // 路由
-        component: './user/Login', // 代码位置
+        path: '/user', routes: [
+          {name: '登录', path: '/user/login', component: './user/Login'},
+          {name: '注册', path: '/user/register', component: './user/Register'}
+        ]
       },
-      {
-        component: './404',
-      },
+      {component: './404'},
     ],
   },
   {
@@ -44,7 +43,7 @@
   },
   {
     path: '/',
-    redirect: '/welcome',
+    redirect: '/user/login',
   },
   {
     component: './404',
