@@ -5,8 +5,8 @@
     routes: [
       {
         name: 'login',
-        path: '/user/login',
-        component: './user/Login',
+        path: '/user/login', // 路由
+        component: './user/Login', // 代码位置
       },
       {
         component: './404',
