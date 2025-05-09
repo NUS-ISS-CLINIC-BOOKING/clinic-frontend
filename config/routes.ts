@@ -19,6 +19,12 @@
     component: './Welcome',
   },
   {
+    path: '/clinic/all',
+    name: 'Clinic Info',
+    icon: 'medicineBox', // 可选一个图标
+    component: './clinic/all',
+  },
+  {
     path: '/admin',
     name: 'admin',
     icon: 'crown',
