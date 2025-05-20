@@ -9,16 +9,31 @@ import { message } from 'antd';
 import React, { useState } from 'react';
 import { history } from 'umi';
 
+const specialityOptions = [
+  { label: '内科', value: 'internal_medicine' },
+  { label: '外科', value: 'surgery' },
+  { label: '儿科', value: 'pediatrics' },
+  { label: '皮肤科', value: 'dermatology' },
+  { label: '妇产科', value: 'obstetrics_gynecology' },
+  { label: '耳鼻喉科', value: 'ent' },
+  { label: '眼科', value: 'ophthalmology' },
+  { label: '口腔科', value: 'dentistry' },
+  { label: '精神科', value: 'psychiatry' },
+  { label: '中医科', value: 'traditional_chinese_medicine' },
+  { label: '放射科', value: 'radiology' },
+  { label: '康复科', value: 'rehabilitation' },
+];
+
 const Register: React.FC = () => {
-  const [usertype, setUsertype] = useState<number | undefined>(undefined); // ✅ 跟字段名保持一致
+  const [usertype, setUsertype] = useState<number | undefined>(undefined);
 
   const handleSubmit = async (values: any) => {
     try {
       const payload = {
-        ...values, // ✅ 不要多余添加 roleId 之类字段
+        ...values,
       };
 
-      console.log("最终提交 payload：", payload); // ✅ 调试用，可删
+      console.log('最终提交 payload：', payload);
 
       const res = await register(payload);
       if (res.code === 200) {
@@ -67,7 +82,7 @@ const Register: React.FC = () => {
           rules={[{ required: true, message: '请选择性别' }]}
         />
         <ProFormSelect
-          name="usertype" // ✅ 必须为 usertype（小写）
+          name="usertype"
           options={[
             { label: '病人', value: 0 },
             { label: '医生', value: 1 },
@@ -77,22 +92,22 @@ const Register: React.FC = () => {
           placeholder="用户类型"
           rules={[{ required: true, message: '请选择用户类型' }]}
           fieldProps={{
-            onChange: (value) => setUsertype(value), // ✅ 注意状态变量也改成 usertype
+            onChange: (value) => setUsertype(value),
           }}
         />
 
-        {/* 仅医生或诊所员工才显示额外信息 */}
         {(usertype === 1 || usertype === 2) && (
           <>
             <ProFormText
-              name="clinicid" // ✅ 与后端保持一致
+              name="clinicid"
               placeholder="诊所ID"
               rules={[{ required: true, message: '请输入诊所ID' }]}
             />
-            <ProFormText
-              name="speciality" // ✅ 英式拼写小写
-              placeholder="专业/职责"
-              rules={[{ required: true, message: '请输入专业或职责' }]}
+            <ProFormSelect
+              name="speciality"
+              options={specialityOptions}
+              placeholder="请选择科室/职责"
+              rules={[{ required: true, message: '请选择专业或职责' }]}
             />
           </>
         )}
