@@ -21,8 +21,8 @@ export async function register(body: {
   email: string;
   password: string;
   gender: number;
-  userType: number;
-  clinicID?: number; // 匹配后端字段
+  usertype: number;
+  clinicid?: number; // 匹配后端字段
   speciality?: string; // 注意拼写，匹配后端字段
 }) {
   return request<{

@@ -10,14 +10,15 @@ import React, { useState } from 'react';
 import { history } from 'umi';
 
 const Register: React.FC = () => {
-  const [userType, setUserType] = useState<number | undefined>(undefined);
+  const [usertype, setUsertype] = useState<number | undefined>(undefined); // ✅ 跟字段名保持一致
 
   const handleSubmit = async (values: any) => {
     try {
       const payload = {
-        ...values,
-        roleId: values.userType, // 可传也可不传，看后端需求
+        ...values, // ✅ 不要多余添加 roleId 之类字段
       };
+
+      console.log("最终提交 payload：", payload); // ✅ 调试用，可删
 
       const res = await register(payload);
       if (res.code === 200) {
@@ -66,7 +67,7 @@ const Register: React.FC = () => {
           rules={[{ required: true, message: '请选择性别' }]}
         />
         <ProFormSelect
-          name="userType"
+          name="usertype" // ✅ 必须为 usertype（小写）
           options={[
             { label: '病人', value: 0 },
             { label: '医生', value: 1 },
@@ -76,20 +77,20 @@ const Register: React.FC = () => {
           placeholder="用户类型"
           rules={[{ required: true, message: '请选择用户类型' }]}
           fieldProps={{
-            onChange: (value) => setUserType(value),
+            onChange: (value) => setUsertype(value), // ✅ 注意状态变量也改成 usertype
           }}
         />
 
         {/* 仅医生或诊所员工才显示额外信息 */}
-        {(userType === 1 || userType === 2) && (
+        {(usertype === 1 || usertype === 2) && (
           <>
             <ProFormText
-              name="clinicID" // 注意：拼写和大小写匹配后端
+              name="clinicid" // ✅ 与后端保持一致
               placeholder="诊所ID"
               rules={[{ required: true, message: '请输入诊所ID' }]}
             />
             <ProFormText
-              name="speciality" // 注意拼写不是 specialty
+              name="speciality" // ✅ 英式拼写小写
               placeholder="专业/职责"
               rules={[{ required: true, message: '请输入专业或职责' }]}
             />
