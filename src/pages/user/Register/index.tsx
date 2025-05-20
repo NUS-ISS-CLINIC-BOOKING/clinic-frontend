@@ -1,17 +1,28 @@
 import { register } from '@/services/auth';
 import { LockOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
-import { LoginForm, ProFormText, ProFormSelect } from '@ant-design/pro-components';
+import {
+  LoginForm,
+  ProFormText,
+  ProFormSelect,
+} from '@ant-design/pro-components';
 import { message } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import { history } from 'umi';
 
 const Register: React.FC = () => {
+  const [userType, setUserType] = useState<number | undefined>(undefined);
+
   const handleSubmit = async (values: any) => {
     try {
-      const res = await register(values);
+      const payload = {
+        ...values,
+        roleId: values.userType, // 可传也可不传，看后端需求
+      };
+
+      const res = await register(payload);
       if (res.code === 200) {
         message.success('注册成功，请登录');
-        history.push('/user/login'); // 注册成功跳转登录页
+        history.push('/user/login');
       }
     } catch (e) {
       message.error('注册失败，请检查信息');
@@ -64,7 +75,26 @@ const Register: React.FC = () => {
           ]}
           placeholder="用户类型"
           rules={[{ required: true, message: '请选择用户类型' }]}
+          fieldProps={{
+            onChange: (value) => setUserType(value),
+          }}
         />
+
+        {/* 仅医生或诊所员工才显示额外信息 */}
+        {(userType === 1 || userType === 2) && (
+          <>
+            <ProFormText
+              name="clinicID" // 注意：拼写和大小写匹配后端
+              placeholder="诊所ID"
+              rules={[{ required: true, message: '请输入诊所ID' }]}
+            />
+            <ProFormText
+              name="speciality" // 注意拼写不是 specialty
+              placeholder="专业/职责"
+              rules={[{ required: true, message: '请输入专业或职责' }]}
+            />
+          </>
+        )}
       </LoginForm>
     </div>
   );

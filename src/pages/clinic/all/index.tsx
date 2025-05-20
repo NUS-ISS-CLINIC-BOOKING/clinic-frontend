@@ -41,7 +41,7 @@ const ClinicList: React.FC = () => {
               <p><strong>地址：</strong>{clinic.address}</p>
               <p><strong>电话：</strong>{clinic.phone}</p>
               <p><strong>经纬度：</strong>{clinic.latitude}, {clinic.longitude}</p>
-              <p><strong>负责人ID：</strong>{clinic.staff_list_id}</p>
+              <p><strong>负责人ID：</strong>{clinic.postal_code}</p>
             </Card>
           </List.Item>
         )}
