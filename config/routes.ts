@@ -6,7 +6,8 @@
       {
         path: '/user', routes: [
           {name: '登录', path: '/user/login', component: './user/Login'},
-          {name: '注册', path: '/user/register', component: './user/Register'}
+          {name: '注册', path: '/user/register', component: './user/Register'},
+          {name: '填写健康信息', path: '/user/health_info/:id', component: './user/HealthInfo'}
         ]
       },
       {component: './404'},

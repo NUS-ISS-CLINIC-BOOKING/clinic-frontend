@@ -37,9 +37,15 @@ const Register: React.FC = () => {
 
       const res = await register(payload);
       if (res.code === 200) {
-        message.success('注册成功，请登录');
-        history.push('/user/login');
+        // if (values.usertype === 0) {
+        //   message.success('注册成功，请完善健康信息');
+        //   history.push(`/user/health_info/${res.data.userId}`);
+        // } else {
+          message.success('注册成功，请登录');
+          history.push('/user/login');
+        // }
       }
+
     } catch (e) {
       message.error('注册失败，请检查信息');
     }
