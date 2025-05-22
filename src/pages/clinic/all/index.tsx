@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Card, List, message, Empty } from 'antd';
 import { getAllClinics } from '@/services/clinic';
 import styles from './index.less';
+import { history } from 'umi';
+
 
 const ClinicList: React.FC = () => {
   const [clinics, setClinics] = useState<any[]>([]);
@@ -37,7 +39,13 @@ const ClinicList: React.FC = () => {
         locale={{ emptyText: <Empty description="暂无诊所信息" /> }}
         renderItem={(clinic) => (
           <List.Item key={clinic.id}>
-            <Card title={clinic.name}>
+            <Card title={clinic.name}
+                  hoverable
+                  onClick={() => {
+                    // 跳转到该诊所的科室列表页面
+                    history.push(`/clinic/${clinic.id}/specialtyList`);
+                  }}
+            >
               <p><strong>地址：</strong>{clinic.address}</p>
               <p><strong>电话：</strong>{clinic.phone}</p>
               <p><strong>经纬度：</strong>{clinic.latitude}, {clinic.longitude}</p>

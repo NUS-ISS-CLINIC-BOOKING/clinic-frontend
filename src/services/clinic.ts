@@ -5,3 +5,12 @@ export async function getAllClinics() {
         method: 'GET',
     });
 }
+
+export async function getSpecialtiesByClinicId(clinicId: string) {
+  return request(`/api/clinic/specialtyList/${clinicId}`, {
+    method: 'GET',
+  });
+}
+
+
+

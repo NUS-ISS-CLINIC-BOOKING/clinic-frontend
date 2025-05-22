@@ -26,6 +26,10 @@
     component: './clinic/all',
   },
   {
+    path: '/clinic/:clinicId/specialtyList',
+    component: './clinic/specialtyList/index',
+  },
+  {
     path: '/admin',
     name: 'admin',
     icon: 'crown',
