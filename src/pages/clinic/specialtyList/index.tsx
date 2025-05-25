@@ -4,6 +4,8 @@ import { useParams, history } from 'umi';
 import { Card, List, message, Empty } from 'antd';
 import styles from './index.less';
 import { getSpecialtiesByClinicId } from '@/services/clinic';
+import BackButton from '@/components/BackButton';
+
 
 interface Specialty {
   specialty: string;
@@ -36,6 +38,7 @@ const SpecialtyList: React.FC = () => {
 
   return (
     <div className={styles.container}>
+      <BackButton to="/clinic/all" text="返回诊所列表" />
       <h2>科室列表（诊所ID: {clinicId}）</h2>
       <List
         loading={loading}
