@@ -49,7 +49,7 @@ const SpecialtyList: React.FC = () => {
               hoverable
               onClick={() => {
                 // 点击后跳转展示医生页（下一步）
-                history.push(`/clinic/${clinicId}/doctorList/${item.specialty}`);
+                history.push(`/queue/clinicSpecialtyDoctor/${clinicId}/${item.specialty}`);
               }}
             >
               <p>点击查看医生列表</p>

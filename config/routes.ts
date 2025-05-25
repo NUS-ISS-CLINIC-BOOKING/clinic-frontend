@@ -19,6 +19,7 @@
     icon: 'smile',
     component: './Welcome',
   },
+  //clinic routes
   {
     path: '/clinic/all',
     name: 'Clinic Info',
@@ -29,6 +30,12 @@
     path: '/clinic/:clinicId/specialtyList',
     component: './clinic/specialtyList/index',
   },
+  //queue routes
+  {
+    path: '/queue/clinicSpecialtyDoctor/:clinicId/:specialty',
+    component: './queue/clinicSpecialtyDoctor/index',
+  },
+
   {
     path: '/admin',
     name: 'admin',
