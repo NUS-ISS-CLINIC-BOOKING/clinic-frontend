@@ -25,34 +25,30 @@ const LoginMessage: React.FC<{ content: string }> = ({ content }) => (
 
 const Login: React.FC = () => {
   const [loginError, setLoginError] = useState<boolean>(false);
-
-  // ✅ 获取 setInitialState 用于设置 currentUser
   const { setInitialState } = useModel('@@initialState');
 
   const handleSubmit = async (values: { email: string; password: string }) => {
     try {
       const res = await login(values);
       if (res.code === 200 && res.data?.token) {
-        message.success('登录成功！');
+        message.success('Login Successful!');
 
-        // ✅ 设置 currentUser，避免跳回 login
         await setInitialState((prev) => ({
           ...prev,
           currentUser: {
             ...res.data,
             id: res.data.userId,
-            name: 'issTeam',     // ✅ mock 一个 name
-            access: 'admin',     // ✅ mock 一个 access 权限
+            name: 'issTeam',
+            access: 'admin',
           },
         }));
 
-        // ✅ 然后跳转
         history.push('/clinic/all');
       } else {
         setLoginError(true);
       }
     } catch (error) {
-      message.error('登录失败，请检查邮箱和密码');
+      message.error('Login failed. Please check your email and password.');
       setLoginError(true);
     }
   };
@@ -63,13 +59,13 @@ const Login: React.FC = () => {
         <LoginForm
           logo={<img alt="logo" src="/logo.svg" />}
           title="Clinic Booking"
-          subTitle="用户登录"
+          subTitle="User Login"
           initialValues={{ autoLogin: true }}
           onFinish={async (values) => {
             await handleSubmit(values as { email: string; password: string });
           }}
         >
-          {loginError && <LoginMessage content="邮箱或密码错误" />}
+          {loginError && <LoginMessage content="Incorrect email or password" />}
 
           <ProFormText
             name="email"
@@ -77,8 +73,8 @@ const Login: React.FC = () => {
               size: 'large',
               prefix: <UserOutlined className={styles.prefixIcon} />,
             }}
-            placeholder="请输入邮箱"
-            rules={[{ required: true, message: '请输入邮箱！' }]}
+            placeholder="Please enter email"
+            rules={[{ required: true, message: 'Email is required!' }]}
           />
           <ProFormText.Password
             name="password"
@@ -86,16 +82,16 @@ const Login: React.FC = () => {
               size: 'large',
               prefix: <LockOutlined className={styles.prefixIcon} />,
             }}
-            placeholder="请输入密码"
-            rules={[{ required: true, message: '请输入密码！' }]}
+            placeholder="Please enter password"
+            rules={[{ required: true, message: 'Password is required!' }]}
           />
           <div style={{ marginBottom: 24 }}>
             <ProFormCheckbox noStyle name="autoLogin">
-              自动登录
+              Auto Login
             </ProFormCheckbox>
-            <a style={{ float: 'right' }}>忘记密码</a>
+            <a style={{ float: 'right' }}>Forgot Password</a>
           </div>
-          <Link to="/user/register">新用户注册</Link>
+          <Link to="/user/register">Register a New Account</Link>
         </LoginForm>
       </div>
       <Footer />

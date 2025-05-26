@@ -20,14 +20,14 @@ const AppointmentPage: React.FC = () => {
   const selectedDate = dates[selectedDateIndex];
 
   const handleTimeClick = (time: string) => {
-    message.success(`预约成功：${selectedDate} ${time}（医生 ID：${doctorId}）`);
+    message.success(`Appointment Confirmed: ${selectedDate} ${time} (Doctor ID: ${doctorId})`);
   };
 
   return (
     <Layout style={{ padding: 24 }}>
       <Sider width={200} style={{ background: '#fff', marginRight: 24 }}>
         <List
-          header={<strong>选择日期</strong>}
+          header={<strong>Select Date</strong>}
           bordered
           dataSource={dates}
           renderItem={(date, idx) => (
@@ -45,7 +45,7 @@ const AppointmentPage: React.FC = () => {
       </Sider>
 
       <Content>
-        <Card title={`选择时间段（${selectedDate}）`}>
+        <Card title={`Select Time Slot (${selectedDate})`}>
           {TIME_SLOTS.map((time) => (
             <Button
               key={time}

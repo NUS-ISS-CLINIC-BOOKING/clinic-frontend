@@ -99,12 +99,12 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
     {
       key: 'healthinfo',
       icon: <UserOutlined />,
-      label: '健康信息',
+      label: 'HealthInfo',
     },
     {
       key: 'logout',
       icon: <LogoutOutlined />,
-      label: '退出登录',
+      label: 'Logout',
     },
   ];
 

@@ -4,7 +4,6 @@ import { getAllClinics } from '@/services/clinic';
 import styles from './index.less';
 import { history } from 'umi';
 
-
 const ClinicList: React.FC = () => {
   const [clinics, setClinics] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -18,11 +17,11 @@ const ClinicList: React.FC = () => {
             message.info(res.data.message || 'No clinics found');
           }
         } else {
-          message.error(res.message || '加载诊所失败');
+          message.error(res.message || 'Failed to load clinics');
         }
       })
       .catch(() => {
-        message.error('接口请求失败');
+        message.error('API request failed');
       })
       .finally(() => {
         setLoading(false);
@@ -31,25 +30,25 @@ const ClinicList: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <h2>诊所列表</h2>
+      <h2>Clinic List</h2>
       <List
         loading={loading}
         grid={{ gutter: 16, column: 3 }}
         dataSource={clinics}
-        locale={{ emptyText: <Empty description="暂无诊所信息" /> }}
+        locale={{ emptyText: <Empty description="No clinics available" /> }}
         renderItem={(clinic) => (
           <List.Item key={clinic.id}>
-            <Card title={clinic.name}
-                  hoverable
-                  onClick={() => {
-                    // 跳转到该诊所的科室列表页面
-                    history.push(`/clinic/${clinic.id}/specialtyList`);
-                  }}
+            <Card
+              title={clinic.name}
+              hoverable
+              onClick={() => {
+                history.push(`/clinic/${clinic.id}/specialtyList`);
+              }}
             >
-              <p><strong>地址：</strong>{clinic.address}</p>
-              <p><strong>电话：</strong>{clinic.phone}</p>
-              <p><strong>经纬度：</strong>{clinic.latitude}, {clinic.longitude}</p>
-              <p><strong>负责人ID：</strong>{clinic.postal_code}</p>
+              <p><strong>Address:</strong> {clinic.address}</p>
+              <p><strong>Phone:</strong> {clinic.phone}</p>
+              <p><strong>Coordinates:</strong> {clinic.latitude}, {clinic.longitude}</p>
+              <p><strong>Postal Code:</strong> {clinic.postal_code}</p>
             </Card>
           </List.Item>
         )}

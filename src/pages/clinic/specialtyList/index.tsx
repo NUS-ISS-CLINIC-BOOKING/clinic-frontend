@@ -1,11 +1,9 @@
-/// 1. specialtyList 页面：src/pages/clinic/specialtyList/index.tsx
 import React, { useEffect, useState } from 'react';
 import { useParams, history } from 'umi';
 import { Card, List, message, Empty } from 'antd';
 import styles from './index.less';
 import { getSpecialtiesByClinicId } from '@/services/clinic';
 import BackButton from '@/components/BackButton';
-
 
 interface Specialty {
   specialty: string;
@@ -25,11 +23,11 @@ const SpecialtyList: React.FC = () => {
             message.info(res.data.message || 'No specialties found');
           }
         } else {
-          message.error(res.message || '加载科室失败');
+          message.error(res.message || 'Failed to load specialties');
         }
       })
       .catch(() => {
-        message.error('接口请求失败');
+        message.error('API request failed');
       })
       .finally(() => {
         setLoading(false);
@@ -38,24 +36,23 @@ const SpecialtyList: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <BackButton to="/clinic/all" text="返回诊所列表" />
-      <h2>科室列表（诊所ID: {clinicId}）</h2>
+      <BackButton to="/clinic/all" text="Back to Clinic List" />
+      <h2>Specialty List (Clinic ID: {clinicId})</h2>
       <List
         loading={loading}
         grid={{ gutter: 16, column: 3 }}
         dataSource={specialties}
-        locale={{ emptyText: <Empty description="暂无科室信息" /> }}
+        locale={{ emptyText: <Empty description="No specialties available" /> }}
         renderItem={(item) => (
           <List.Item key={item.specialty}>
             <Card
               title={item.specialty}
               hoverable
               onClick={() => {
-                // 点击后跳转展示医生页（下一步）
                 history.push(`/queue/clinicSpecialtyDoctor/${clinicId}/${item.specialty}`);
               }}
             >
-              <p>点击查看医生列表</p>
+              <p>Click to view doctor list</p>
             </Card>
           </List.Item>
         )}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, history } from 'umi'; // ✅ 加上 history
+import { useParams, history } from 'umi';
 import { Card, List, message, Empty } from 'antd';
 import styles from './index.less';
 import { getDoctorsByClinicAndSpecialty } from '@/services/queue';
@@ -22,11 +22,11 @@ const DoctorList: React.FC = () => {
         if (res.code === 200 && res.data?.doctors) {
           setDoctors(res.data.doctors);
         } else {
-          message.error(res.message || '加载医生失败');
+          message.error(res.message || 'Failed to load doctors');
         }
       })
       .catch(() => {
-        message.error('接口请求失败');
+        message.error('API request failed');
       })
       .finally(() => {
         setLoading(false);
@@ -35,16 +35,15 @@ const DoctorList: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <BackButton to={`/clinic/${clinicId}/specialtyList`} text="返回科室列表" />
-      <h2>医生列表 - {specialty}（诊所ID: {clinicId}）</h2>
+      <BackButton to={`/clinic/${clinicId}/specialtyList`} text="Back to Specialty List" />
+      <h2>Doctor List - {specialty} (Clinic ID: {clinicId})</h2>
       <List
         loading={loading}
         grid={{ gutter: 16, column: 3 }}
         dataSource={doctors}
-        locale={{ emptyText: <Empty description="暂无医生信息" /> }}
+        locale={{ emptyText: <Empty description="No doctors available" /> }}
         renderItem={(item) => (
           <List.Item key={item.id}>
-            {/* ✅ 点击医生卡片跳转预约页面 */}
             <Card
               title={item.name}
               hoverable
@@ -52,9 +51,9 @@ const DoctorList: React.FC = () => {
                 history.push(`/queue/appointment/${item.id}`);
               }}
             >
-              <p><strong>ID：</strong>{item.id}</p>
-              <p><strong>科室：</strong>{item.specialty}</p>
-              <p style={{ color: '#1890ff', marginTop: 12 }}>👉 点击选择预约时间</p>
+              <p><strong>ID:</strong> {item.id}</p>
+              <p><strong>Specialty:</strong> {item.specialty}</p>
+              <p style={{ color: '#1890ff', marginTop: 12 }}>👉 Click to select appointment time</p>
             </Card>
           </List.Item>
         )}
