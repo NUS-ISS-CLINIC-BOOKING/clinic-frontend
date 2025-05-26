@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'umi';
+import { useParams, history } from 'umi'; // ✅ 加上 history
 import { Card, List, message, Empty } from 'antd';
 import styles from './index.less';
 import { getDoctorsByClinicAndSpecialty } from '@/services/queue';
 import BackButton from '@/components/BackButton';
-
 
 interface Doctor {
   id: number;
@@ -45,9 +44,17 @@ const DoctorList: React.FC = () => {
         locale={{ emptyText: <Empty description="暂无医生信息" /> }}
         renderItem={(item) => (
           <List.Item key={item.id}>
-            <Card title={item.name}>
+            {/* ✅ 点击医生卡片跳转预约页面 */}
+            <Card
+              title={item.name}
+              hoverable
+              onClick={() => {
+                history.push(`/queue/appointment/${item.id}`);
+              }}
+            >
               <p><strong>ID：</strong>{item.id}</p>
               <p><strong>科室：</strong>{item.specialty}</p>
+              <p style={{ color: '#1890ff', marginTop: 12 }}>👉 点击选择预约时间</p>
             </Card>
           </List.Item>
         )}

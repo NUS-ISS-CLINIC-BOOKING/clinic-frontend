@@ -49,7 +49,10 @@
     path: '/queue/clinicSpecialtyDoctor/:clinicId/:specialty',
     component: './queue/clinicSpecialtyDoctor/index',
   },
-
+  {
+    path: '/queue/appointment/:doctorId',
+    component: './queue/Appointment',
+  },
   {
     path: '/admin',
     name: 'admin',
