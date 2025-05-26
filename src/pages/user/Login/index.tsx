@@ -40,7 +40,8 @@ const Login: React.FC = () => {
           ...prev,
           currentUser: {
             ...res.data,
-            name: 'DevUser',     // ✅ mock 一个 name
+            id: res.data.userId,
+            name: 'issTeam',     // ✅ mock 一个 name
             access: 'admin',     // ✅ mock 一个 access 权限
           },
         }));

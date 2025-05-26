@@ -1,49 +1,45 @@
-import React from 'react';
-import { useParams, history } from 'umi';
-import { ProForm, ProFormText } from '@ant-design/pro-components';
-import { message } from 'antd';
+import React, { useState } from 'react';
+import { useParams } from 'umi';
+import { Input, Button, Card, message } from 'antd';
+import { modifyHealthInfo } from '@/services/auth';
+import BackButton from '@/components/BackButton'; // ✅ 路径视你项目结构而定
 
-const HealthInfo: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+const HealthInfoPage: React.FC = () => {
+  const { userId } = useParams<{ userId: string }>();
+  const [allergyInfo, setAllergyInfo] = useState('');
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async () => {
+    if (!allergyInfo) {
+      message.warning('请输入过敏信息');
+      return;
+    }
     try {
-      const res = await fetch(`/api/health_info/${id}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ allergyInfo: values.allergyInfo }),
-      });
-
-      if (res.ok) {
-        message.success('提交成功，请登录');
-        history.push('/user/login');
-      } else {
-        const errText = await res.text();
-        console.error('错误详情：', errText);
-        message.error('提交失败');
-      }
-    } catch (e) {
-      console.error(e);
-      message.error('请求异常');
+      await modifyHealthInfo(userId, allergyInfo);
+      message.success('保存成功');
+    } catch (e: any) {
+      message.error(e.message || '提交失败');
     }
   };
 
   return (
-    <div style={{ maxWidth: 480, margin: 'auto', paddingTop: 100 }}>
-      <h2 style={{ textAlign: 'center' }}>填写健康信息</h2>
-      <ProForm
-        onFinish={handleSubmit}
-        submitter={{ searchConfig: { submitText: '提交' } }}
-      >
-        <ProFormText
-          name="allergyInfo"
-          label="过敏信息"
-          placeholder="请输入过敏药物、食物等"
-          rules={[{ required: true, message: '过敏信息不能为空' }]}
+    <div style={{ maxWidth: 600, margin: '24px auto' }}>
+      {/* ✅ 复用你的返回组件 */}
+      <BackButton to="/clinic/all" text="返回诊所列表" />
+
+      <Card title="填写健康信息">
+        <p>用户 ID: {userId}</p>
+        <Input
+          placeholder="请输入过敏原（如 peanut）"
+          value={allergyInfo}
+          onChange={(e) => setAllergyInfo(e.target.value)}
+          style={{ marginBottom: 16 }}
         />
-      </ProForm>
+        <Button type="primary" onClick={handleSubmit}>
+          提交
+        </Button>
+      </Card>
     </div>
   );
 };
 
-export default HealthInfo;
+export default HealthInfoPage;

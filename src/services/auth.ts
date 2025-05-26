@@ -38,3 +38,23 @@ export async function register(body: {
   });
 }
 
+// src/services/auth.ts
+
+/** 修改健康信息 */
+export async function modifyHealthInfo(userId: string, allergyInfo: string) {
+  return fetch(`/api/auth/health_info/${userId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ allergyInfo }),
+  }).then(async (res) => {
+    const result = await res.json();
+    if (!res.ok || result.code !== 200) {
+      throw new Error(result.message || '保存失败');
+    }
+    return result;
+  });
+}
+
+

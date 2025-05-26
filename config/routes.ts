@@ -1,17 +1,31 @@
 ﻿export default [
+  // {
+  //   path: '/user',
+  //   layout: false,
+  //   routes: [
+  //     {
+  //       path: '/user', routes: [
+  //         {name: '登录', path: '/user/login', component: './user/Login'},
+  //         {name: '注册', path: '/user/register', component: './user/Register'},
+  //         {name: '填写健康信息', path: '/user/health_info/:userId', component: './user/HealthInfo'}
+  //       ]
+  //     },
+  //     {component: './404'},
+  //   ],
+  // },
   {
     path: '/user',
     layout: false,
     routes: [
-      {
-        path: '/user', routes: [
-          {name: '登录', path: '/user/login', component: './user/Login'},
-          {name: '注册', path: '/user/register', component: './user/Register'},
-          {name: '填写健康信息', path: '/user/health_info/:id', component: './user/HealthInfo'}
-        ]
-      },
-      {component: './404'},
-    ],
+      { name: '登录', path: '/user/login', component: './user/Login' },
+      { name: '注册', path: '/user/register', component: './user/Register' },
+      { name: '填写健康信息', path: '/user/health_info/:userId', component: './user/HealthInfo' },
+      { component: './404' }
+    ]
+  },
+  {
+    path: '/user/health_info/:userId',
+    component: './user/HealthInfo',
   },
   {
     path: '/welcome',

@@ -42,10 +42,19 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
         loginOut();
         return;
       }
+      if (key === 'healthinfo') {
+        // 假设跳转到 `/user/HealthInfo/:userId`
+        const userId = initialState?.currentUser?.id;
+        if (userId) {
+          history.push(`/user/health_info/${userId}`);
+        }
+        return;
+      }
       history.push(`/account/${key}`);
     },
-    [setInitialState],
+    [setInitialState, initialState],
   );
+
 
   const loading = (
     <span className={`${styles.action} ${styles.account}`}>
@@ -72,27 +81,33 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   const menuItems: ItemType[] = [
     ...(menu
       ? [
-          {
-            key: 'center',
-            icon: <UserOutlined />,
-            label: '个人中心',
-          },
-          {
-            key: 'settings',
-            icon: <SettingOutlined />,
-            label: '个人设置',
-          },
-          {
-            type: 'divider' as const,
-          },
-        ]
+        {
+          key: 'center',
+          icon: <UserOutlined />,
+          label: '个人中心',
+        },
+        {
+          key: 'settings',
+          icon: <SettingOutlined />,
+          label: '个人设置',
+        },
+        {
+          type: 'divider' as const,
+        },
+      ]
       : []),
+    {
+      key: 'healthinfo',
+      icon: <UserOutlined />,
+      label: '健康信息',
+    },
     {
       key: 'logout',
       icon: <LogoutOutlined />,
       label: '退出登录',
     },
   ];
+
 
   const menuHeaderDropdown = (
     <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick} items={menuItems} />
