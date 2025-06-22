@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Input, Button, message } from 'antd';
 import { useLocation } from 'umi';
-import { getClinicLocation } from '@/services/clinic'; // ✅ 你需要定义这个接口方法
+import { getClinicLocation, getAllClinics } from '@/services/clinic';
 
-// 声明全局 window.google
 declare global {
   interface Window {
     google: any;
@@ -11,44 +10,67 @@ declare global {
   }
 }
 
-// 解析 query 参数（如 ?clinicId=1）
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
 const MapPage: React.FC = () => {
-  const [lat, setLat] = useState(35.6895); // 默认东京
+  const [lat, setLat] = useState(35.6895);
   const [lng, setLng] = useState(139.6917);
   const mapRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
-
+  const allMarkersRef = useRef<any[]>([]);
   const query = useQuery();
   const clinicId = query.get('clinicId');
 
-  // 地图初始化
+  // 初始化地图
   useEffect(() => {
     window.initMap = () => {
       const position = { lat, lng };
       const map = new window.google.maps.Map(document.getElementById('map') as HTMLElement, {
         center: position,
-        zoom: 12,
+        zoom: 3,
       });
-
       mapRef.current = map;
 
+      // 初始化一个默认 marker
       markerRef.current = new window.google.maps.Marker({
         position,
         map,
       });
+
+      // 如果没有 clinicId，加载全部诊所 Marker
+      if (!clinicId) {
+        getAllClinics()
+          .then((res) => {
+            if (res.code === 200 && res.data?.clinics?.length > 0) {
+              const bounds = new window.google.maps.LatLngBounds();
+              res.data.clinics.forEach((clinic: any) => {
+                const pos = {
+                  lat: clinic.latitude,
+                  lng: clinic.longitude,
+                };
+                const marker = new window.google.maps.Marker({
+                  position: pos,
+                  map,
+                  title: clinic.name,
+                });
+                allMarkersRef.current.push(marker);
+                bounds.extend(pos);
+              });
+              map.fitBounds(bounds); // 自动缩放与居中
+            }
+          })
+          .catch(() => message.error('加载全部诊所失败'));
+      }
     };
 
-    // 如果脚本已加载完毕，立即初始化
     if (window.google && window.google.maps) {
       window.initMap();
     }
   }, []);
 
-  // 请求诊所坐标并跳转地图
+  // 若传入 clinicId，则仅定位该诊所
   useEffect(() => {
     if (clinicId) {
       getClinicLocation(Number(clinicId)).then((res) => {
@@ -60,6 +82,7 @@ const MapPage: React.FC = () => {
 
           if (mapRef.current) {
             mapRef.current.setCenter(position);
+            mapRef.current.setZoom(14);
             if (markerRef.current) {
               markerRef.current.setPosition(position);
             } else {
@@ -76,7 +99,7 @@ const MapPage: React.FC = () => {
     }
   }, [clinicId]);
 
-  // 手动跳转地图位置
+  // 手动跳转
   const goToLocation = () => {
     const newLat = parseFloat(lat as any);
     const newLng = parseFloat(lng as any);
@@ -84,6 +107,7 @@ const MapPage: React.FC = () => {
 
     if (mapRef.current) {
       mapRef.current.setCenter(position);
+      mapRef.current.setZoom(14);
 
       if (markerRef.current) {
         markerRef.current.setPosition(position);
@@ -98,19 +122,21 @@ const MapPage: React.FC = () => {
 
   return (
     <div>
-      <div style={{ padding: '12px', display: 'flex', gap: 8 }}>
-        <Input
+      <div style={{ padding: '12px', display: 'flex', gap: 16, alignItems: 'center' }}>
+        <label>
+          纬度 (Latitude):<Input
           style={{ width: 120 }}
-          placeholder="Latitude"
           value={lat}
           onChange={(e) => setLat(Number(e.target.value))}
         />
-        <Input
+        </label>
+        <label>
+          经度 (Longitude):<Input
           style={{ width: 120 }}
-          placeholder="Longitude"
           value={lng}
           onChange={(e) => setLng(Number(e.target.value))}
         />
+        </label>
         <Button type="primary" onClick={goToLocation}>
           跳转
         </Button>
