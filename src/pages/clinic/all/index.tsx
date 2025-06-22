@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Card, List, message, Empty } from 'antd';
+import { Card, List, message, Empty, Button } from 'antd';
 import { getAllClinics } from '@/services/clinic';
 import styles from './index.less';
 import { history } from 'umi';
-import { Button } from 'antd';
-
 
 const ClinicList: React.FC = () => {
   const [clinics, setClinics] = useState<any[]>([]);
@@ -32,17 +30,17 @@ const ClinicList: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h2>Clinic List</h2>
         <Button type="primary" onClick={() => history.push('/map')}>
-          查看地图
+          查看地图（手动输入坐标）
         </Button>
       </div>
       <List
         loading={loading}
-        grid={{gutter: 16, column: 3}}
+        grid={{ gutter: 16, column: 3 }}
         dataSource={clinics}
-        locale={{emptyText: <Empty description="No clinics available"/>}}
+        locale={{ emptyText: <Empty description="No clinics available" /> }}
         renderItem={(clinic) => (
           <List.Item key={clinic.id}>
             <Card
@@ -51,6 +49,18 @@ const ClinicList: React.FC = () => {
               onClick={() => {
                 history.push(`/clinic/${clinic.id}/specialtyList`);
               }}
+              actions={[
+                <Button
+                  type="link"
+                  key="map"
+                  onClick={(e) => {
+                    e.stopPropagation(); // 防止触发 Card 的跳转
+                    history.push(`/map?clinicId=${clinic.id}`);
+                  }}
+                >
+                  查看地图
+                </Button>,
+              ]}
             >
               <p><strong>Address:</strong> {clinic.address}</p>
               <p><strong>Phone:</strong> {clinic.phone}</p>

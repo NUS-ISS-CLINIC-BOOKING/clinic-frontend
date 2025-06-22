@@ -12,5 +12,9 @@ export async function getSpecialtiesByClinicId(clinicId: string) {
   });
 }
 
+export async function getClinicLocation(clinicId: number) {
+  return request(`/api/clinic/location/${clinicId}`);
+}
+
 
 
