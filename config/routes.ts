@@ -44,6 +44,13 @@
     path: '/clinic/:clinicId/specialtyList',
     component: './clinic/specialtyList/index',
   },
+  //map
+  {
+    path: '/map',
+    name: '谷歌地图',
+    component: './MapPage',
+  },
+
   //queue routes
   {
     path: '/queue/clinicSpecialtyDoctor/:clinicId/:specialty',

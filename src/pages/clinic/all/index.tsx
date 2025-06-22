@@ -3,6 +3,8 @@ import { Card, List, message, Empty } from 'antd';
 import { getAllClinics } from '@/services/clinic';
 import styles from './index.less';
 import { history } from 'umi';
+import { Button } from 'antd';
+
 
 const ClinicList: React.FC = () => {
   const [clinics, setClinics] = useState<any[]>([]);
@@ -30,12 +32,17 @@ const ClinicList: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <h2>Clinic List</h2>
+      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <h2>Clinic List</h2>
+        <Button type="primary" onClick={() => history.push('/map')}>
+          查看地图
+        </Button>
+      </div>
       <List
         loading={loading}
-        grid={{ gutter: 16, column: 3 }}
+        grid={{gutter: 16, column: 3}}
         dataSource={clinics}
-        locale={{ emptyText: <Empty description="No clinics available" /> }}
+        locale={{emptyText: <Empty description="No clinics available"/>}}
         renderItem={(clinic) => (
           <List.Item key={clinic.id}>
             <Card
