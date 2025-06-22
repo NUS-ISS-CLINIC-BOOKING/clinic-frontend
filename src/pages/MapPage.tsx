@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Input, Button } from 'antd';
 
-// ✅ 声明 window.google 类型，防止 TS 报错
+// ✅ 声明 window.google 类型
 declare global {
   interface Window {
     google: any;
@@ -9,24 +10,80 @@ declare global {
 }
 
 const MapPage: React.FC = () => {
+  const [lat, setLat] = useState(35.6895); // 默认东京
+  const [lng, setLng] = useState(139.6917);
+
+  const mapRef = useRef<any>(null); // 地图实例
+  const markerRef = useRef<any>(null); // Marker 实例
+
   useEffect(() => {
-    // ✅ 定义 initMap，供 script 回调触发
+    // 定义供 script callback 使用的 initMap
     window.initMap = () => {
-      new window.google.maps.Map(document.getElementById('map') as HTMLElement, {
-        center: { lat: 35.6895, lng: 139.6917 }, // 东京坐标
-        zoom: 12,
+      const position = { lat, lng };
+      const map = new window.google.maps.Map(
+        document.getElementById('map') as HTMLElement,
+        {
+          center: position,
+          zoom: 12,
+        }
+      );
+
+      mapRef.current = map;
+
+      // 初始 marker
+      markerRef.current = new window.google.maps.Marker({
+        position,
+        map: map,
       });
     };
 
-    // ✅ 如果 script 已经加载完毕，手动调用 initMap
+    // 若 Google Maps 脚本已加载完
     if (window.google && window.google.maps) {
       window.initMap();
     }
   }, []);
 
+  // 跳转地图中心
+  const goToLocation = () => {
+    const newLat = parseFloat(lat as any);
+    const newLng = parseFloat(lng as any);
+    const position = { lat: newLat, lng: newLng };
+
+    if (mapRef.current) {
+      mapRef.current.setCenter(position);
+
+      if (markerRef.current) {
+        markerRef.current.setPosition(position);
+      } else {
+        markerRef.current = new window.google.maps.Marker({
+          position,
+          map: mapRef.current,
+        });
+      }
+    }
+  };
+
   return (
-    <div style={{ width: '100%', height: '100vh' }}>
-      <div id="map" style={{ width: '100%', height: '100%' }} />
+    <div>
+      <div style={{ padding: '12px', display: 'flex', gap: 8 }}>
+        <Input
+          style={{ width: 120 }}
+          placeholder="Latitude"
+          value={lat}
+          onChange={(e) => setLat(Number(e.target.value))}
+        />
+        <Input
+          style={{ width: 120 }}
+          placeholder="Longitude"
+          value={lng}
+          onChange={(e) => setLng(Number(e.target.value))}
+        />
+        <Button type="primary" onClick={goToLocation}>
+          跳转
+        </Button>
+      </div>
+
+      <div id="map" style={{ width: '100%', height: '90vh' }} />
     </div>
   );
 };
