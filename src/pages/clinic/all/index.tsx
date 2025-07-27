@@ -33,7 +33,7 @@ const ClinicList: React.FC = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h2>Clinic List</h2>
         <Button type="primary" onClick={() => history.push('/map')}>
-          查看地图（手动输入坐标）
+          View map (manually enter coordinates)
         </Button>
       </div>
       <List
@@ -58,7 +58,7 @@ const ClinicList: React.FC = () => {
                     history.push(`/map?clinicId=${clinic.id}`);
                   }}
                 >
-                  查看地图
+                  Search by Map
                 </Button>,
               ]}
             >

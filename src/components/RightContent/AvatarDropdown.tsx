@@ -42,9 +42,16 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
         loginOut();
         return;
       }
+      if (key === 'appointmentHistory') {
+        const userId = initialState?.currentUser?.id;
+        if (userId) {
+          history.push(`/user/appointmentHistory/${userId}`);
+        }
+        return;
+      }
       if (key === 'healthinfo') {
         // 假设跳转到 `/user/HealthInfo/:userId`
-        const userId = initialState?.currentUser?.userid;
+        const userId = initialState?.currentUser?.id;
         if (userId) {
           history.push(`/user/health_info/${userId}`);
         }
@@ -100,6 +107,11 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       key: 'healthinfo',
       icon: <UserOutlined />,
       label: 'HealthInfo',
+    },
+    {
+      key: 'appointmentHistory',
+      icon: <UserOutlined />,
+      label: 'Appointment History',
     },
     {
       key: 'logout',

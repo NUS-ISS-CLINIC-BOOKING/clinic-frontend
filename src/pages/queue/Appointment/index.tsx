@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'umi';
-import { List, Card, Button, message, Layout, Modal } from 'antd';
+import { List, Card, Button, message, Layout, Modal, Select } from 'antd';
 import dayjs from 'dayjs';
-import axios from 'axios';
-import BackButton from '@/components/BackButton'; // ✅ 加载返回按钮
+import { getDoctorQueue, bookAppointment } from '@/services/queue';
+import BackButton from '@/components/BackButton';
 
-const { Sider, Content } = Layout;
+const { Content } = Layout;
 
 const TIME_SLOTS = [
   '09:00', '09:30', '10:00', '10:30',
@@ -14,6 +14,13 @@ const TIME_SLOTS = [
   '16:00', '16:30', '17:00', '17:30', '18:00'
 ];
 
+interface Slot {
+  date: string;
+  startTime: string;
+  patientId: number | null;
+  available: boolean;
+}
+
 const AppointmentPage: React.FC = () => {
   const { doctorId, clinicId, patientId } = useParams<{
     doctorId: string;
@@ -21,10 +28,26 @@ const AppointmentPage: React.FC = () => {
     patientId: string;
   }>();
 
-  const [selectedDateIndex, setSelectedDateIndex] = useState(0);
-
   const dates = [...Array(7)].map((_, i) => dayjs().add(i, 'day').format('YYYY-MM-DD'));
-  const selectedDate = dates[selectedDateIndex];
+  const [selectedDate, setSelectedDate] = useState(dates[0]);
+  const [queueSlots, setQueueSlots] = useState<Slot[]>([]);
+
+  // 加载医生该日预约队列
+  useEffect(() => {
+    if (doctorId && selectedDate) {
+      getDoctorQueue(doctorId, selectedDate)
+        .then((res) => {
+          if (res.code === 200) {
+            setQueueSlots(res.data.slots);
+          } else {
+            message.error(res.message || 'Failed to fetch doctor queue');
+          }
+        })
+        .catch(() => {
+          message.error('Request failed');
+        });
+    }
+  }, [doctorId, selectedDate]);
 
   const handleTimeClick = (time: string) => {
     const slotId = TIME_SLOTS.indexOf(time);
@@ -40,13 +63,11 @@ const AppointmentPage: React.FC = () => {
       cancelText: 'Cancel',
       onOk: async () => {
         try {
-          const res = await axios.put(
-            `/api/queue/bookSlot/${selectedDate}/${slotId}/${clinicId}/${doctorId}/${patientId}`
-          );
-          if (res.data?.data?.success) {
+          const res = await bookAppointment(selectedDate, slotId, clinicId, doctorId, patientId);
+          if (res.data?.success) {
             message.success(`Appointment booked successfully on ${selectedDate} at ${time}`);
           } else {
-            message.error(res.data?.data?.message || 'Booking failed');
+            message.error(res.data?.message || 'Booking failed');
           }
         } catch (error) {
           console.error('Booking request failed:', error);
@@ -60,41 +81,42 @@ const AppointmentPage: React.FC = () => {
     <Layout style={{ padding: 24 }}>
       <BackButton to={`/clinic/${clinicId}/specialtyList`} text="Back to Specialty List" />
 
-      <Layout style={{ marginTop: 16 }}>
-        <Sider width={200} style={{ background: '#fff', marginRight: 24 }}>
+      <Content style={{ marginTop: 24 }}>
+        <Card title="Select Appointment Date">
+          <Select
+            style={{ width: 240 }}
+            value={selectedDate}
+            onChange={(val) => setSelectedDate(val)}
+            options={dates.map((d) => ({ label: d, value: d }))}
+          />
+        </Card>
+
+        <Card title={`Select Time Slot (${selectedDate})`} style={{ marginTop: 24 }}>
+          {TIME_SLOTS.map((time) => (
+            <Button
+              key={time}
+              type="default"
+              onClick={() => handleTimeClick(time)}
+              style={{ margin: '8px' }}
+            >
+              {time}
+            </Button>
+          ))}
+        </Card>
+
+        <Card title="Doctor's Appointments on This Day" style={{ marginTop: 24 }}>
           <List
-            header={<strong>Select Date</strong>}
             bordered
-            dataSource={dates}
-            renderItem={(date, idx) => (
-              <List.Item
-                style={{
-                  cursor: 'pointer',
-                  backgroundColor: selectedDateIndex === idx ? '#e6f7ff' : undefined,
-                }}
-                onClick={() => setSelectedDateIndex(idx)}
-              >
-                {date}
+            dataSource={queueSlots.filter((slot) => !slot.available)} // ✅ 只展示已预约的
+            locale={{ emptyText: 'No appointments yet for this day.' }}
+            renderItem={(slot) => (
+              <List.Item>
+                <strong>{slot.startTime}</strong> — Booked by patient {slot.patientId}
               </List.Item>
             )}
           />
-        </Sider>
-
-        <Content>
-          <Card title={`Select Time Slot (${selectedDate})`}>
-            {TIME_SLOTS.map((time) => (
-              <Button
-                key={time}
-                type="default"
-                onClick={() => handleTimeClick(time)}
-                style={{ margin: '8px' }}
-              >
-                {time}
-              </Button>
-            ))}
-          </Card>
-        </Content>
-      </Layout>
+        </Card>
+      </Content>
     </Layout>
   );
 };

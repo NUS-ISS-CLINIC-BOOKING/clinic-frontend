@@ -20,12 +20,17 @@
       { name: '登录', path: '/user/login', component: './user/Login' },
       { name: '注册', path: '/user/register', component: './user/Register' },
       { name: '填写健康信息', path: '/user/health_info/:userId', component: './user/HealthInfo' },
+      { name: 'Appointment History', path: '/user/appointmentHistory/:patientId', component: './user/AppointmentHistory',},
       { component: './404' }
     ]
   },
   {
     path: '/user/health_info/:userId',
     component: './user/HealthInfo',
+  },
+  {
+    path: '/user/appointmentHistory/:patientId',
+    component: './user/AppointmentHistory',
   },
   {
     path: '/welcome',
@@ -47,7 +52,7 @@
   //map
   {
     path: '/map',
-    name: '谷歌地图',
+    name: 'GoogleMap',
     component: './MapPage',
   },
 
@@ -64,6 +69,7 @@
     path: '/queue/appointment/:clinicId/:doctorId/:patientId',
     component: './queue/Appointment',
   },
+  // 自带
   {
     path: '/admin',
     name: 'admin',

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'umi';
 import { Input, Button, Card, message } from 'antd';
+import { PageContainer } from '@ant-design/pro-components'; // ✅ 加入 PageContainer
 import { modifyHealthInfo } from '@/services/auth';
 import BackButton from '@/components/BackButton';
 
@@ -22,22 +23,24 @@ const HealthInfoPage: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: '24px auto' }}>
+    <PageContainer> {/* ✅ 改为 PageContainer 包裹整个页面 */}
       <BackButton to="/clinic/all" text="Back to Clinic List" />
-
       <Card title="Fill in Health Information">
-        <p>User ID: {userId}</p>
-        <Input
-          placeholder="Please enter allergy (e.g. peanut)"
-          value={allergyInfo}
-          onChange={(e) => setAllergyInfo(e.target.value)}
-          style={{ marginBottom: 16 }}
-        />
-        <Button type="primary" onClick={handleSubmit}>
-          Submit
-        </Button>
+        <p><strong>User ID:</strong> {userId}</p>
+        <div style={{ display: 'flex', gap: 12, maxWidth: 1200, marginBottom: 16 }}>
+          <Input
+            placeholder="Please enter allergy (e.g. peanut)"
+            value={allergyInfo}
+            onChange={(e) => setAllergyInfo(e.target.value)}
+            style={{ flex: 1 }}
+          />
+          <Button type="primary" onClick={handleSubmit}>
+            Submit
+          </Button>
+        </div>
       </Card>
-    </div>
+
+    </PageContainer>
   );
 };
 
