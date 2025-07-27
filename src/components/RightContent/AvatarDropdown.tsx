@@ -44,7 +44,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       }
       if (key === 'healthinfo') {
         // 假设跳转到 `/user/HealthInfo/:userId`
-        const userId = initialState?.currentUser?.id;
+        const userId = initialState?.currentUser?.userid;
         if (userId) {
           history.push(`/user/health_info/${userId}`);
         }

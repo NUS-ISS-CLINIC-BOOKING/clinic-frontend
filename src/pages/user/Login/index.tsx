@@ -42,6 +42,8 @@ const Login: React.FC = () => {
             access: 'admin',
           },
         }));
+        // @ts-ignore
+        localStorage.setItem('userId', res.data.userId);
 
         history.push('/clinic/all');
       } else {

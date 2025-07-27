@@ -48,8 +48,15 @@ const DoctorList: React.FC = () => {
               title={item.name}
               hoverable
               onClick={() => {
-                history.push(`/queue/appointment/${item.id}`);
+                const patientId = localStorage.getItem('userId');
+                if (!patientId) {
+                  message.error('请先登录');
+                  return;
+                }
+
+                history.push(`/queue/appointment/${clinicId}/${item.id}/${patientId}`);
               }}
+
             >
               <p><strong>ID:</strong> {item.id}</p>
               <p><strong>Specialty:</strong> {item.specialty}</p>

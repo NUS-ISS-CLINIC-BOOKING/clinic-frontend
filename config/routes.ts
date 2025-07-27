@@ -61,6 +61,10 @@
     component: './queue/Appointment',
   },
   {
+    path: '/queue/appointment/:clinicId/:doctorId/:patientId',
+    component: './queue/Appointment',
+  },
+  {
     path: '/admin',
     name: 'admin',
     icon: 'crown',
