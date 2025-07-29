@@ -4,6 +4,7 @@ import { Card, List, message, Empty } from 'antd';
 import styles from './index.less';
 import { getSpecialtiesByClinicId } from '@/services/clinic';
 import BackButton from '@/components/BackButton';
+import { MedicineBoxOutlined } from '@ant-design/icons';
 
 interface Specialty {
   specialty: string;
@@ -36,17 +37,24 @@ const SpecialtyList: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <BackButton to="/clinic/all" text="Back to Clinic List" />
-      <h2>Specialty List (Clinic ID: {clinicId})</h2>
+      <div className={styles.headerRow}>
+        <BackButton to="/clinic/all" text="Back to Clinic List" />
+        <h2 className={styles.pageTitle}>Specialty List (Clinic ID: {clinicId})</h2>
+      </div>
       <List
         loading={loading}
-        grid={{ gutter: 16, column: 3 }}
+        grid={{ gutter: 24, column: 3 }}
         dataSource={specialties}
         locale={{ emptyText: <Empty description="No specialties available" /> }}
         renderItem={(item) => (
           <List.Item key={item.specialty}>
             <Card
-              title={item.specialty}
+              className={styles.specialtyCard}
+              title={
+                <span className={styles.cardTitle}>
+                  <MedicineBoxOutlined /> {item.specialty}
+                </span>
+              }
               hoverable
               onClick={() => {
                 history.push(`/queue/clinicSpecialtyDoctor/${clinicId}/${item.specialty}`);

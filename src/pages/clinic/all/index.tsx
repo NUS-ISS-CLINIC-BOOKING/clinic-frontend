@@ -3,6 +3,12 @@ import { Card, List, message, Empty, Button } from 'antd';
 import { getAllClinics } from '@/services/clinic';
 import styles from './index.less';
 import { history } from 'umi';
+import {
+  EnvironmentOutlined,
+  PhoneOutlined,
+  CompassOutlined,
+  MailOutlined,
+} from '@ant-design/icons';
 
 const ClinicList: React.FC = () => {
   const [clinics, setClinics] = useState<any[]>([]);
@@ -30,31 +36,38 @@ const ClinicList: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2>Clinic List</h2>
-        <Button type="primary" onClick={() => history.push('/map')}>
+      <div className={styles.headerRow}>
+        <h2 className={styles.pageTitle}>Clinic List</h2>
+        <Button
+          type="primary"
+          className={styles.backButton}
+          icon={<CompassOutlined />}
+          onClick={() => history.push('/map')}
+        >
           View map (manually enter coordinates)
         </Button>
       </div>
       <List
         loading={loading}
-        grid={{ gutter: 16, column: 3 }}
+        grid={{ gutter: 24, column: 3 }}
         dataSource={clinics}
         locale={{ emptyText: <Empty description="No clinics available" /> }}
         renderItem={(clinic) => (
           <List.Item key={clinic.id}>
             <Card
-              title={clinic.name}
+              className={styles.clinicCard}
+              title={<span className={styles.cardTitle}>{clinic.name}</span>}
               hoverable
-              onClick={() => {
-                history.push(`/clinic/${clinic.id}/specialtyList`);
-              }}
+              onClick={() =>
+                history.push(`/clinic/${clinic.id}/specialtyList`)
+              }
               actions={[
                 <Button
                   type="link"
                   key="map"
+                  icon={<CompassOutlined />}
                   onClick={(e) => {
-                    e.stopPropagation(); // 防止触发 Card 的跳转
+                    e.stopPropagation(); // Prevent Card click
                     history.push(`/map?clinicId=${clinic.id}`);
                   }}
                 >
@@ -62,10 +75,20 @@ const ClinicList: React.FC = () => {
                 </Button>,
               ]}
             >
-              <p><strong>Address:</strong> {clinic.address}</p>
-              <p><strong>Phone:</strong> {clinic.phone}</p>
-              <p><strong>Coordinates:</strong> {clinic.latitude}, {clinic.longitude}</p>
-              <p><strong>Postal Code:</strong> {clinic.postal_code}</p>
+              <p>
+                <EnvironmentOutlined /> <strong>Address:</strong>{' '}
+                {clinic.address}
+              </p>
+              <p>
+                <PhoneOutlined /> <strong>Phone:</strong> {clinic.phone}
+              </p>
+              <p>
+                <MailOutlined /> <strong>Coordinates:</strong>{' '}
+                {clinic.latitude}, {clinic.longitude}
+              </p>
+              <p>
+                <strong>Postal Code:</strong> {clinic.postal_code}
+              </p>
             </Card>
           </List.Item>
         )}

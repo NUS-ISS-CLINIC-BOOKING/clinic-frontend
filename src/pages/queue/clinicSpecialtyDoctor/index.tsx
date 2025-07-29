@@ -4,6 +4,7 @@ import { Card, List, message, Empty } from 'antd';
 import styles from './index.less';
 import { getDoctorsByClinicAndSpecialty } from '@/services/queue';
 import BackButton from '@/components/BackButton';
+import { UserOutlined, CalendarOutlined } from '@ant-design/icons';
 
 interface Doctor {
   id: number;
@@ -35,17 +36,26 @@ const DoctorList: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <BackButton to={`/clinic/${clinicId}/specialtyList`} text="Back to Specialty List" />
-      <h2>Doctor List - {specialty} (Clinic ID: {clinicId})</h2>
+      <div className={styles.headerRow}>
+        <BackButton to={`/clinic/${clinicId}/specialtyList`} text="Back to Specialty List" />
+        <h2 className={styles.pageTitle}>
+          Doctor List - {specialty.toUpperCase()} (Clinic ID: {clinicId})
+        </h2>
+      </div>
       <List
         loading={loading}
-        grid={{ gutter: 16, column: 3 }}
+        grid={{ gutter: 24, column: 3 }}
         dataSource={doctors}
         locale={{ emptyText: <Empty description="No doctors available" /> }}
         renderItem={(item) => (
           <List.Item key={item.id}>
             <Card
-              title={item.name}
+              className={styles.doctorCard}
+              title={
+                <span className={styles.cardTitle}>
+                  <UserOutlined /> {item.name}
+                </span>
+              }
               hoverable
               onClick={() => {
                 const patientId = localStorage.getItem('userId');
@@ -56,11 +66,12 @@ const DoctorList: React.FC = () => {
 
                 history.push(`/queue/appointment/${clinicId}/${item.id}/${patientId}`);
               }}
-
             >
               <p><strong>ID:</strong> {item.id}</p>
               <p><strong>Specialty:</strong> {item.specialty}</p>
-              <p style={{ color: '#1890ff', marginTop: 12 }}>👉 Click to select appointment time</p>
+              <p className={styles.selectTip}>
+                <CalendarOutlined /> Click to select appointment time
+              </p>
             </Card>
           </List.Item>
         )}

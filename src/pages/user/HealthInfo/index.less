@@ -1,50 +1,46 @@
 @import (reference) '~antd/es/style/themes/index';
 
 .container {
+  font-family: 'Poppins', sans-serif;
+  padding: 24px;
+}
+
+.healthCard {
+  max-width: 720px;
+  margin-top: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.userId {
+  font-size: 14px;
+  color: @text-color-secondary;
+  margin-bottom: 16px;
+}
+
+.inputRow {
   display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: auto;
-  background: @layout-body-background;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
 }
 
-.lang {
-  width: 100%;
-  height: 40px;
-  line-height: 44px;
-  text-align: right;
-  :global(.ant-dropdown-trigger) {
-    margin-right: 24px;
-  }
-}
-
-.content {
+.inputField {
   flex: 1;
-  padding: 32px 0;
+  min-width: 240px;
+  border-radius: 6px;
+  height: 40px;
 }
 
-@media (min-width: @screen-md-min) {
-  .container {
-    background-image: url('https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg');
-    background-repeat: no-repeat;
-    background-position: center 110px;
-    background-size: 100%;
-  }
-
-  .content {
-    padding: 32px 0 24px;
-  }
+.submitButton {
+  border-radius: 6px;
+  height: 40px;
+  font-weight: 500;
+  padding: 0 24px;
+  transition: all 0.3s;
 }
 
-.icon {
-  margin-left: 8px;
-  color: rgba(0, 0, 0, 0.2);
-  font-size: 24px;
-  vertical-align: middle;
-  cursor: pointer;
-  transition: color 0.3s;
-
-  &:hover {
-    color: @primary-color;
-  }
+.submitButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
 }

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'umi';
-import { List, Card, Button, message, Layout, Modal, Select } from 'antd';
+import { List, Card, Button, message, Layout, Modal, Select, Tag, Typography } from 'antd';
 import dayjs from 'dayjs';
 import { getDoctorQueue, bookAppointment } from '@/services/queue';
 import BackButton from '@/components/BackButton';
+import styles from './index.less';
 
 const { Content } = Layout;
+const { Title } = Typography;
 
 const TIME_SLOTS = [
   '09:00', '09:30', '10:00', '10:30',
@@ -32,7 +34,6 @@ const AppointmentPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(dates[0]);
   const [queueSlots, setQueueSlots] = useState<Slot[]>([]);
 
-  // 加载医生该日预约队列
   useEffect(() => {
     if (doctorId && selectedDate) {
       getDoctorQueue(doctorId, selectedDate)
@@ -77,12 +78,15 @@ const AppointmentPage: React.FC = () => {
     });
   };
 
+  const isSlotAvailable = (time: string) =>
+    queueSlots.find((s) => s.startTime.endsWith(time))?.available !== false;
+
   return (
-    <Layout style={{ padding: 24 }}>
+    <Layout className={styles.container}>
       <BackButton to={`/clinic/${clinicId}/specialtyList`} text="Back to Specialty List" />
 
-      <Content style={{ marginTop: 24 }}>
-        <Card title="Select Appointment Date">
+      <Content className={styles.content}>
+        <Card title={<Title level={4}>Select Appointment Date</Title>} className={styles.card}>
           <Select
             style={{ width: 240 }}
             value={selectedDate}
@@ -91,27 +95,37 @@ const AppointmentPage: React.FC = () => {
           />
         </Card>
 
-        <Card title={`Select Time Slot (${selectedDate})`} style={{ marginTop: 24 }}>
-          {TIME_SLOTS.map((time) => (
-            <Button
-              key={time}
-              type="default"
-              onClick={() => handleTimeClick(time)}
-              style={{ margin: '8px' }}
-            >
-              {time}
-            </Button>
-          ))}
+        <Card
+          title={<Title level={4}>Available Time Slots on {selectedDate}</Title>}
+          className={styles.card}
+        >
+          {TIME_SLOTS.map((time) => {
+            const available = isSlotAvailable(time);
+            return (
+              <Button
+                key={time}
+                type={available ? 'primary' : 'default'}
+                className={styles.timeButton}
+                disabled={!available}
+                onClick={() => handleTimeClick(time)}
+              >
+                {time}
+              </Button>
+            );
+          })}
         </Card>
 
-        <Card title="Doctor's Appointments on This Day" style={{ marginTop: 24 }}>
+        <Card
+          title={<Title level={4}>Doctor's Booked Appointments</Title>}
+          className={styles.card}
+        >
           <List
-            bordered
-            dataSource={queueSlots.filter((slot) => !slot.available)} // ✅ 只展示已预约的
+            dataSource={queueSlots.filter((slot) => !slot.available)}
             locale={{ emptyText: 'No appointments yet for this day.' }}
             renderItem={(slot) => (
               <List.Item>
-                <strong>{slot.startTime}</strong> — Booked by patient {slot.patientId}
+                <Tag color="red">{slot.startTime}</Tag>
+                <span className={styles.slotText}>Booked by patient {slot.patientId}</span>
               </List.Item>
             )}
           />

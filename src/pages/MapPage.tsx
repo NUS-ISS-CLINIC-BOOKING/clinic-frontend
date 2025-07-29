@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Input, Button, message } from 'antd';
 import { useLocation } from 'umi';
 import { getClinicLocation, getAllClinics } from '@/services/clinic';
+import styles from './MapPage.less';
+import BackButton from '@/components/BackButton';
 
 declare global {
   interface Window {
@@ -23,7 +25,6 @@ const MapPage: React.FC = () => {
   const query = useQuery();
   const clinicId = query.get('clinicId');
 
-  // 初始化地图
   useEffect(() => {
     window.initMap = () => {
       const position = { lat, lng };
@@ -33,13 +34,11 @@ const MapPage: React.FC = () => {
       });
       mapRef.current = map;
 
-      // 初始化一个默认 marker
       markerRef.current = new window.google.maps.Marker({
         position,
         map,
       });
 
-      // 如果没有 clinicId，加载全部诊所 Marker
       if (!clinicId) {
         getAllClinics()
           .then((res) => {
@@ -58,10 +57,10 @@ const MapPage: React.FC = () => {
                 allMarkersRef.current.push(marker);
                 bounds.extend(pos);
               });
-              map.fitBounds(bounds); // 自动缩放与居中
+              map.fitBounds(bounds);
             }
           })
-          .catch(() => message.error('加载全部诊所失败'));
+          .catch(() => message.error('Failed to load all clinics'));
       }
     };
 
@@ -70,7 +69,6 @@ const MapPage: React.FC = () => {
     }
   }, []);
 
-  // 若传入 clinicId，则仅定位该诊所
   useEffect(() => {
     if (clinicId) {
       getClinicLocation(Number(clinicId)).then((res) => {
@@ -93,13 +91,12 @@ const MapPage: React.FC = () => {
             }
           }
         } else {
-          message.error(res.message || '获取诊所坐标失败');
+          message.error(res.message || 'Failed to get clinic coordinates');
         }
       });
     }
   }, [clinicId]);
 
-  // 手动跳转
   const goToLocation = () => {
     const newLat = parseFloat(lat as any);
     const newLng = parseFloat(lng as any);
@@ -121,27 +118,32 @@ const MapPage: React.FC = () => {
   };
 
   return (
-    <div>
-      <div style={{ padding: '12px', display: 'flex', gap: 16, alignItems: 'center' }}>
-        <label>
-          纬度 (Latitude):<Input
-          style={{ width: 120 }}
-          value={lat}
-          onChange={(e) => setLat(Number(e.target.value))}
-        />
-        </label>
-        <label>
-          经度 (Longitude):<Input
-          style={{ width: 120 }}
-          value={lng}
-          onChange={(e) => setLng(Number(e.target.value))}
-        />
-        </label>
-        <Button type="primary" onClick={goToLocation}>
-          跳转
-        </Button>
+    <div className={styles.container}>
+      <div className={styles.controlPanel}>
+        <BackButton to="/clinic/all" text="Back to Clinic List" />
+        <div className={styles.inputGroup}>
+          <div className={styles.inputRow}>
+            <label>Latitude:</label>
+            <Input
+              style={{ width: 120 }}
+              value={lat}
+              onChange={(e) => setLat(Number(e.target.value))}
+            />
+          </div>
+          <div className={styles.inputRow}>
+            <label>Longitude:</label>
+            <Input
+              style={{ width: 120 }}
+              value={lng}
+              onChange={(e) => setLng(Number(e.target.value))}
+            />
+          </div>
+          <Button type="primary" onClick={goToLocation} className={styles.goButton}>
+            Go to Location
+          </Button>
+        </div>
       </div>
-      <div id="map" style={{ width: '100%', height: '90vh' }} />
+      <div id="map" className={styles.mapContainer} />
     </div>
   );
 };

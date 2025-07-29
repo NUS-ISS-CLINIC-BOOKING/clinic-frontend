@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'umi';
 import { PageContainer } from '@ant-design/pro-components';
-import { Card, List, Pagination, message } from 'antd';
+import { Card, List, Pagination, message, Tag, Typography } from 'antd';
 import axios from 'axios';
 import BackButton from '@/components/BackButton';
+import styles from './index.less';
+
+const { Title } = Typography;
+const PAGE_SIZE = 10;
 
 interface Slot {
   date: string;
@@ -13,8 +17,6 @@ interface Slot {
   clinicId: number;
   available: boolean;
 }
-
-const PAGE_SIZE = 10;
 
 const AppointmentHistoryPage: React.FC = () => {
   const { patientId } = useParams<{ patientId: string }>();
@@ -42,34 +44,46 @@ const AppointmentHistoryPage: React.FC = () => {
 
   return (
     <PageContainer>
-      <BackButton to="/clinic/all" text="Back to Clinic List" />
-      <Card title="Appointment History">
-        <List
-          loading={loading}
-          dataSource={currentData}
-          renderItem={(item, index) => (
-            <List.Item key={index}>
-              <List.Item.Meta
-                title={`Date: ${item.date} | Time: ${item.startTime}`}
-                description={
-                  <>
+      <div className={styles.container}>
+        <BackButton to="/clinic/all" text="Back to Clinic List" />
+        <Card
+          className={styles.historyCard}
+          title={<Title level={4}>My Appointment History</Title>}
+        >
+          <List
+            loading={loading}
+            dataSource={currentData}
+            itemLayout="vertical"
+            locale={{ emptyText: 'No appointments found.' }}
+            renderItem={(item, index) => (
+              <List.Item key={index} className={styles.slotItem}>
+                <Card className={styles.slotCard} hoverable>
+                  <div className={styles.slotTop}>
+                    <div className={styles.dateTime}>
+                      <strong>{item.date}</strong> @ {item.startTime}
+                    </div>
+                    <Tag color={item.available ? 'green' : 'red'}>
+                      {item.available ? 'Available' : 'Booked'}
+                    </Tag>
+                  </div>
+                  <div className={styles.slotInfo}>
                     <div>Clinic ID: {item.clinicId}</div>
                     <div>Doctor ID: {item.doctorId}</div>
-                    <div>Status: {item.available ? 'Available' : 'Booked'}</div>
-                  </>
-                }
-              />
-            </List.Item>
-          )}
-        />
-        <Pagination
-          current={currentPage}
-          pageSize={PAGE_SIZE}
-          total={slots.length}
-          onChange={(page) => setCurrentPage(page)}
-          style={{ textAlign: 'center', marginTop: 24 }}
-        />
-      </Card>
+                  </div>
+                </Card>
+              </List.Item>
+            )}
+          />
+
+          <Pagination
+            current={currentPage}
+            pageSize={PAGE_SIZE}
+            total={slots.length}
+            onChange={(page) => setCurrentPage(page)}
+            className={styles.pagination}
+          />
+        </Card>
+      </div>
     </PageContainer>
   );
 };

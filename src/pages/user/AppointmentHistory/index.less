@@ -1,50 +1,50 @@
 @import (reference) '~antd/es/style/themes/index';
 
 .container {
+  font-family: 'Poppins', sans-serif;
+  padding: 24px;
+}
+
+.historyCard {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.slotItem {
+  padding: 0;
+  border: none;
+}
+
+.slotCard {
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.slotCard:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+.slotTop {
   display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: auto;
-  background: @layout-body-background;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
-.lang {
-  width: 100%;
-  height: 40px;
-  line-height: 44px;
-  text-align: right;
-  :global(.ant-dropdown-trigger) {
-    margin-right: 24px;
-  }
+.dateTime {
+  font-size: 16px;
+  font-weight: 500;
+  color: @heading-color;
 }
 
-.content {
-  flex: 1;
-  padding: 32px 0;
+.slotInfo {
+  color: @text-color-secondary;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
-@media (min-width: @screen-md-min) {
-  .container {
-    background-image: url('https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg');
-    background-repeat: no-repeat;
-    background-position: center 110px;
-    background-size: 100%;
-  }
-
-  .content {
-    padding: 32px 0 24px;
-  }
-}
-
-.icon {
-  margin-left: 8px;
-  color: rgba(0, 0, 0, 0.2);
-  font-size: 24px;
-  vertical-align: middle;
-  cursor: pointer;
-  transition: color 0.3s;
-
-  &:hover {
-    color: @primary-color;
-  }
+.pagination {
+  margin-top: 24px;
+  text-align: center;
 }
